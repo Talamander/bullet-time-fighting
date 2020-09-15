@@ -1,14 +1,17 @@
-[gd_scene format=2]
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Menu/MainMenu.gd" type="Script" id=1]
 
 [node name="MainMenu" type="CanvasLayer"]
+script = ExtResource( 1 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 300.0
-margin_top = 11.0
+margin_top = 12.0
 margin_right = -300.0
-margin_bottom = -50.0
+margin_bottom = -49.0
 custom_constants/separation = 65
 alignment = 1
 __meta__ = {
@@ -181,6 +184,7 @@ margin_left = 234.0
 margin_top = 50.0
 margin_right = 416.0
 margin_bottom = 74.0
+text = "127.0.0.1"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -204,3 +208,5 @@ text = "Join"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+[connection signal="pressed" from="VBoxContainer/PanelHost/btCreate" to="." method="_on_btCreate_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelJoin/btJoin" to="." method="_on_btJoin_pressed"]
