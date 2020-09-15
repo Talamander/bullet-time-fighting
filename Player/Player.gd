@@ -1,6 +1,7 @@
 extends KinematicBody2D
 
 var playerBullet = preload("res://Player/PlayerBullet.tscn")
+var muzzleFlash = preload("res://Effects/MuzzleFlash.tscn")
 
 onready var muzzle = $Muzzle
 
@@ -61,6 +62,8 @@ func fire_bullet():
 		canFire = false
 		fireRate.start()
 		#Instances the playerBullet scene via the Global.gd singleton.
+		var muzzleflash = Global.instance_scene_on_main(muzzleFlash, muzzle.global_position)
+		muzzleflash.set_rotation(global_rotation)
 		var bullet = Global.instance_scene_on_main(playerBullet, muzzle.global_position)
 		bullet.velocity = Vector2.RIGHT.rotated(self.rotation) * bullet.speed
 		bullet.set_rotation(global_rotation)

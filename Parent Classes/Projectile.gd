@@ -1,10 +1,11 @@
-extends Node2D
+extends KinematicBody2D
 
 var velocity = Vector2.ZERO
+export(int) var speed = 1000
 
 func _process(delta):
 	position += velocity * delta
 
-#Destroys the projectile after it has exited the viewport
-func _on_VisibilityNotifier2D_viewport_exited(_viewport):
+
+func _on_decayTimer_timeout():
 	queue_free()
