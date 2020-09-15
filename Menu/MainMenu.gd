@@ -8,6 +8,9 @@ func _ready():
 
 
 func _on_btCreate_pressed():
+	# Properly set the local player information
+	set_player_info()
+	
 	# Gather values from the GUI and fill the network.server_info dictionary
 	if (!$VBoxContainer/PanelHost/txtServerName.text.empty()):
 		Network.server_info.name = $VBoxContainer/PanelHost/txtServerName.text
@@ -18,6 +21,9 @@ func _on_btCreate_pressed():
 	Network.create_server()
 
 func _on_btJoin_pressed():
+	# Properly set the local player information
+	set_player_info()
+	
 	var port = int($VBoxContainer/PanelJoin/txtJoinPort.text)
 	var ip = $VBoxContainer/PanelJoin/txtJoinIP.text
 	Network.join_server(ip, port)
@@ -29,3 +35,6 @@ func _on_ready_to_play():
 func _on_join_fail():
 	print("Failed to join server")
 
+func set_player_info():
+	if (!$VBoxContainer/PanelPlayer/txtPlayerName.text.empty()):
+		Global.player_info.name = $VBoxContainer/PanelPlayer/txtPlayerName.text
