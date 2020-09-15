@@ -9,6 +9,10 @@ var speed = 500
 var acceleration = 4000
 var motion = Vector2.ZERO
 
+#Gun variables
+onready var fireRate = $Timers/fireRate
+var canFire = true
+
 func _physics_process(delta):
 	look_rotation()
 	var input_vector = get_input_vector()
@@ -53,8 +57,15 @@ func bullet_time():
 		Engine.time_scale = 1
 
 func fire_bullet():
-	if Input.is_action_pressed("fire"):
+	if Input.is_action_pressed("fire") and canFire == true:
+		canFire = false
+		fireRate.start()
 		#Instances the playerBullet scene via the Global.gd singleton.
 		var bullet = Global.instance_scene_on_main(playerBullet, muzzle.global_position)
 		bullet.velocity = Vector2.RIGHT.rotated(self.rotation) * bullet.speed
-		motion -= bullet.velocity * .6
+		bullet.set_rotation(global_rotation)
+		motion -= bullet.velocity * .4
+
+
+func _on_fireRate_timeout():
+	canFire = true

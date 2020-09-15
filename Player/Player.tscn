@@ -17,3 +17,10 @@ shape = SubResource( 1 )
 
 [node name="Muzzle" type="Position2D" parent="."]
 position = Vector2( 26.685, 9.37004 )
+
+[node name="Timers" type="Node" parent="."]
+
+[node name="fireRate" type="Timer" parent="Timers"]
+wait_time = 0.1
+one_shot = true
+[connection signal="timeout" from="Timers/fireRate" to="." method="_on_fireRate_timeout"]
