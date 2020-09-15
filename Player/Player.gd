@@ -14,7 +14,9 @@ var motion = Vector2.ZERO
 onready var fireRate = $Timers/fireRate
 var canFire = true
 
+
 func _physics_process(delta):
+	
 	look_rotation()
 	var input_vector = get_input_vector()
 	#Vector2.ZERO is true when no move key is being pressed

@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Effects/BloodSpatterComponent.gd" type="Script" id=1]
+[ext_resource path="res://Effects/BloodParticle.tscn" type="PackedScene" id=2]
+
+[node name="BloodSpatterComponent" type="Node2D"]
+show_behind_parent = true
+script = ExtResource( 1 )
+BloodParticleScene = ExtResource( 2 )
