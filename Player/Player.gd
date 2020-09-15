@@ -1,5 +1,8 @@
 extends KinematicBody2D
 
+var playerBullet = preload("res://Player/PlayerBullet.tscn")
+
+onready var muzzle = $Muzzle
 
 #Movement Variables
 var speed = 500
@@ -16,6 +19,7 @@ func _physics_process(delta):
 		calc_movement(input_vector * acceleration * delta)
 	motion = move_and_slide(motion)
 	bullet_time()
+	fire_bullet()
 
 
 func get_input_vector():
@@ -32,9 +36,9 @@ func apply_friction(amount):
 	else:
 		motion = Vector2.ZERO
 
-func calc_movement(acceleration):
+func calc_movement(value):
 	#Uses the acceleration to ramp up to the speed, so it's not instantaneous
-	motion += acceleration
+	motion += value
 	motion = motion.clamped(speed)
 
 func look_rotation():
@@ -47,3 +51,10 @@ func bullet_time():
 		Engine.time_scale = .5
 	if Input.is_action_just_released("bullet_time"):
 		Engine.time_scale = 1
+
+func fire_bullet():
+	if Input.is_action_pressed("fire"):
+		#Instances the playerBullet scene via the Global.gd singleton.
+		var bullet = Global.instance_scene_on_main(playerBullet, muzzle.global_position)
+		bullet.velocity = Vector2.RIGHT.rotated(self.rotation) * bullet.speed
+		motion -= bullet.velocity * .6
