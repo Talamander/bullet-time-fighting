@@ -1,0 +1,206 @@
+[gd_scene format=2]
+
+[node name="MainMenu" type="CanvasLayer"]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 300.0
+margin_top = 11.0
+margin_right = -300.0
+margin_bottom = -50.0
+custom_constants/separation = 65
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PanelPlayer" type="Panel" parent="VBoxContainer"]
+margin_top = 39.0
+margin_right = 680.0
+margin_bottom = 189.0
+rect_min_size = Vector2( 0, 150 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelPlayer"]
+margin_left = 238.586
+margin_top = 47.0294
+margin_right = 424.586
+margin_bottom = 61.0294
+text = "Player Name:"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="txtPlayerName" type="LineEdit" parent="VBoxContainer/PanelPlayer"]
+margin_left = 239.345
+margin_top = 69.104
+margin_right = 424.345
+margin_bottom = 93.104
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PanelHost" type="Panel" parent="VBoxContainer"]
+margin_top = 254.0
+margin_right = 680.0
+margin_bottom = 404.0
+rect_min_size = Vector2( 0, 150 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="txtServerName" type="LineEdit" parent="VBoxContainer/PanelHost"]
+margin_left = 138.0
+margin_top = 39.0
+margin_right = 320.0
+margin_bottom = 63.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="txtServerPort" type="LineEdit" parent="VBoxContainer/PanelHost"]
+margin_left = 139.0
+margin_top = 76.0
+margin_right = 320.0
+margin_bottom = 100.0
+text = "4546"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="txtMaxPlayers" type="SpinBox" parent="VBoxContainer/PanelHost"]
+margin_left = 140.0
+margin_top = 110.0
+margin_right = 320.0
+margin_bottom = 134.0
+min_value = 2.0
+max_value = 2.0
+value = 2.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelHost"]
+margin_left = 43.0
+margin_top = 44.0
+margin_right = 129.0
+margin_bottom = 58.0
+text = "Server Name:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label2" type="Label" parent="VBoxContainer/PanelHost"]
+margin_left = 97.0
+margin_top = 81.0
+margin_right = 128.0
+margin_bottom = 95.0
+text = "Port:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label3" type="Label" parent="VBoxContainer/PanelHost"]
+margin_left = 47.0
+margin_top = 116.0
+margin_right = 127.0
+margin_bottom = 130.0
+text = "Max Players:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label4" type="Label" parent="VBoxContainer/PanelHost"]
+margin_left = 287.0
+margin_top = 13.0
+margin_right = 372.0
+margin_bottom = 27.0
+text = "Create Server"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="btCreate" type="Button" parent="VBoxContainer/PanelHost"]
+margin_left = 387.0
+margin_top = 51.0
+margin_right = 635.0
+margin_bottom = 118.0
+text = "Create"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PanelJoin" type="Panel" parent="VBoxContainer"]
+margin_top = 469.0
+margin_right = 680.0
+margin_bottom = 619.0
+rect_min_size = Vector2( 0, 150 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label5" type="Label" parent="VBoxContainer/PanelJoin"]
+margin_left = 169.0
+margin_top = 55.0
+margin_right = 230.0
+margin_bottom = 69.0
+text = "Server IP:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label6" type="Label" parent="VBoxContainer/PanelJoin"]
+margin_left = 193.0
+margin_top = 93.0
+margin_right = 224.0
+margin_bottom = 107.0
+text = "Port:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label8" type="Label" parent="VBoxContainer/PanelJoin"]
+margin_left = 287.0
+margin_top = 9.0
+margin_right = 372.0
+margin_bottom = 23.0
+text = "Join Server"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="txtJoinIP" type="LineEdit" parent="VBoxContainer/PanelJoin"]
+margin_left = 234.0
+margin_top = 50.0
+margin_right = 416.0
+margin_bottom = 74.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="txtJoinPort" type="LineEdit" parent="VBoxContainer/PanelJoin"]
+margin_left = 235.0
+margin_top = 87.0
+margin_right = 416.0
+margin_bottom = 111.0
+text = "4546"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="btJoin" type="Button" parent="VBoxContainer/PanelJoin"]
+margin_left = 445.0
+margin_top = 45.0
+margin_right = 635.0
+margin_bottom = 112.0
+text = "Join"
+__meta__ = {
+"_edit_use_anchors_": false
+}
