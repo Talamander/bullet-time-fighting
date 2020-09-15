@@ -9,6 +9,8 @@ onready var muzzle = $Muzzle
 var speed = 500
 var acceleration = 4000
 var motion = Vector2.ZERO
+slave var slave_motion = Vector2.ZERO
+slave var slave_rotation = global_rotation
 
 #Gun variables
 onready var fireRate = $Timers/fireRate
@@ -16,17 +18,25 @@ var canFire = true
 
 
 func _physics_process(delta):
-	
-	look_rotation()
-	var input_vector = get_input_vector()
-	#Vector2.ZERO is true when no move key is being pressed
-	if input_vector == Vector2.ZERO:
-		apply_friction(acceleration * delta)
+	if (is_network_master()):
+		look_rotation()
+		
+		var input_vector = get_input_vector()
+		#Vector2.ZERO is true when no move key is being pressed
+		if input_vector == Vector2.ZERO:
+			apply_friction(acceleration * delta)
+		else:
+			calc_movement(input_vector * acceleration * delta)
+		motion = move_and_slide(motion)
+		
+		rset("slave_motion", position)
+		rset("slave_rotation", global_rotation)
 	else:
-		calc_movement(input_vector * acceleration * delta)
-	motion = move_and_slide(motion)
-	bullet_time()
-	fire_bullet()
+		global_rotation = slave_rotation
+		position = slave_motion
+	
+	#fire_bullet()
+	#bullet_time()
 
 
 func get_input_vector():

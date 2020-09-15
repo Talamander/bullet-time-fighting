@@ -12,6 +12,7 @@ signal server_created                          # when server is successfully cre
 signal join_success                            # When the peer successfully joins a server
 signal join_fail                               # Failed to join a server
 signal player_list_changed                     # List of players has been changed
+signal player_removed(pinfo)                   # A player has been removed from the list
 
 
 func _ready():
@@ -62,6 +63,17 @@ remote func register_player(pinfo):
 	players[pinfo.net_id] = pinfo          # Create the player entry in the dictionary
 	emit_signal("player_list_changed")     # And notify that the player list has been changed
 
+remote func unregister_player(id):
+	print("Removing player ", players[id].name, " from internal table")
+	# Cache the player info because it's still necessary for some upkeeping
+	var pinfo = players[id]
+	# Remove the player from the list
+	players.erase(id)
+	# And notify the list has been changed
+	emit_signal("player_list_changed")
+	# Emit the signal that is meant to be intercepted only by the server
+	emit_signal("player_removed", pinfo)
+
 # Everyone gets notified whenever a new client joins the server
 func _on_player_connected(id):
 	pass
@@ -69,8 +81,13 @@ func _on_player_connected(id):
 
 # Everyone gets notified whenever someone disconnects from the server
 func _on_player_disconnected(id):
-	pass
-
+	print("Player ", players[id].name, " disconnected from server")
+	# Update the player tables
+	if (get_tree().is_network_server()):
+		# Unregister the player from the server's list
+		unregister_player(id)
+		# Then on all remaining peers
+		rpc("unregister_player", id)
 
 # Peer trying to connect to server is notified on success
 func _on_connected_to_server():
@@ -91,4 +108,8 @@ func _on_connection_failed():
 
 # Peer is notified when disconnected from server
 func _on_disconnected_from_server():
-	pass
+	print("Disconnected from server")
+	# Clear the internal player list
+	players.clear()
+	# Reset the player info network ID
+	Global.player_info.net_id = 1
