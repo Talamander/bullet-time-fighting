@@ -22,7 +22,3 @@ func _process(delta):
 
 func _on_decayTimer_timeout():
 	queue_free()
-
-
-func _on_VisibilityNotifier2D_screen_exited():
-	pass#queue_free()
