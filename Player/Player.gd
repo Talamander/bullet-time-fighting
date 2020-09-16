@@ -9,8 +9,8 @@ onready var muzzle = $Muzzle
 var speed = 500
 var acceleration = 4000
 var motion = Vector2.ZERO
-slave var slave_motion = Vector2.ZERO
-slave var slave_rotation = global_rotation
+puppet var puppet_motion = Vector2.ZERO
+puppet var puppet_rotation = global_rotation
 
 #Gun variables
 onready var fireRate = $Timers/fireRate
@@ -18,7 +18,7 @@ var canFire = true
 
 
 func _physics_process(delta):
-	if (is_network_master()):
+	if is_network_master():
 		look_rotation()
 		
 		var input_vector = get_input_vector()
@@ -29,13 +29,15 @@ func _physics_process(delta):
 			calc_movement(input_vector * acceleration * delta)
 		motion = move_and_slide(motion)
 		
-		rset("slave_motion", position)
-		rset("slave_rotation", global_rotation)
+		rset("puppet_motion", position)
+		rset("puppet_rotation", global_rotation)
+		
+		if Input.is_action_pressed("fire") and canFire == true:
+			rpc_unreliable('fire_bullet')
+		
 	else:
-		global_rotation = slave_rotation
-		position = slave_motion
-	
-	#fire_bullet()
+		global_rotation = puppet_rotation
+		position = puppet_motion
 	#bullet_time()
 
 
@@ -69,17 +71,16 @@ func bullet_time():
 	if Input.is_action_just_released("bullet_time"):
 		Engine.time_scale = 1
 
-func fire_bullet():
-	if Input.is_action_pressed("fire") and canFire == true:
-		canFire = false
-		fireRate.start()
-		#Instances the playerBullet scene via the Global.gd singleton.
-		var muzzleflash = Global.instance_scene_on_main(muzzleFlash, muzzle.global_position)
-		muzzleflash.set_rotation(global_rotation)
-		var bullet = Global.instance_scene_on_main(playerBullet, muzzle.global_position)
-		bullet.velocity = Vector2.RIGHT.rotated(self.rotation) * bullet.speed
-		bullet.set_rotation(global_rotation)
-		motion -= bullet.velocity * .4
+sync func fire_bullet():
+	canFire = false
+	fireRate.start()
+	#Instances the playerBullet scene via the Global.gd singleton.
+	var muzzleflash = Global.instance_scene_on_main(muzzleFlash, muzzle.global_position)
+	muzzleflash.set_rotation(global_rotation)
+	var bullet = Global.instance_scene_on_main(playerBullet, muzzle.global_position)
+	bullet.velocity = Vector2.RIGHT.rotated(self.rotation) * bullet.speed
+	bullet.set_rotation(global_rotation)
+	motion -= bullet.velocity * .4
 
 
 func _on_fireRate_timeout():
