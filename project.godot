@@ -16,13 +16,12 @@ _global_script_class_icons={
 [application]
 
 config/name="Bullet-time-fighting"
-run/main_scene="res://Menu/MainMenu.tscn"
+run/main_scene="res://World/Arena.tscn"
 config/icon="res://icon.png"
 
 [autoload]
 
 Global="*res://Singletons/Global.gd"
-Network="*res://Network/network.gd"
 
 [display]
 

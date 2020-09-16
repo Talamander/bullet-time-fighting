@@ -6,39 +6,24 @@ var muzzleFlash = preload("res://Effects/MuzzleFlash.tscn")
 onready var muzzle = $Muzzle
 
 #Movement Variables
-var speed = 500
+var speed = 600
 var acceleration = 4000
 var motion = Vector2.ZERO
-puppet var puppet_motion = Vector2.ZERO
-puppet var puppet_rotation = global_rotation
 
-#Gun variables
-onready var fireRate = $Timers/fireRate
 var canFire = true
 
-
 func _physics_process(delta):
-	if is_network_master():
-		look_rotation()
-		
-		var input_vector = get_input_vector()
-		#Vector2.ZERO is true when no move key is being pressed
-		if input_vector == Vector2.ZERO:
-			apply_friction(acceleration * delta)
-		else:
-			calc_movement(input_vector * acceleration * delta)
-		motion = move_and_slide(motion)
-		
-		rset("puppet_motion", position)
-		rset("puppet_rotation", global_rotation)
-		
-		if Input.is_action_pressed("fire") and canFire == true:
-			rpc('fire_bullet')
-		
+	look_rotation()
+	var input_vector = get_input_vector()
+	#Vector2.ZERO is true when no move key is being pressed
+	if input_vector == Vector2.ZERO:
+		apply_friction(acceleration * delta)
 	else:
-		global_rotation = puppet_rotation
-		position = puppet_motion
+		calc_movement(input_vector * acceleration * delta)
+	motion = move_and_slide(motion)
+	
 	bullet_time()
+	fire_bullet()
 
 
 func get_input_vector():
@@ -58,10 +43,7 @@ func apply_friction(amount):
 func calc_movement(value):
 	#Uses the acceleration to ramp up to the speed, so it's not instantaneous
 	motion += value
-	if Global.bullet_time == true:
-		motion = motion.clamped(speed/2)
-	else:
-		motion = motion.clamped(speed)
+	motion = motion.clamped(speed)
 
 func look_rotation():
 	#Gets the mouse location and sets the player rotation to match
@@ -70,26 +52,24 @@ func look_rotation():
 
 func bullet_time():
 	if Input.is_action_just_pressed("bullet_time"):
-		Global.bullet_time = true
+		Engine.time_scale = .5
 	if Input.is_action_just_released("bullet_time"):
-		Global.bullet_time = false
+		Engine.time_scale = 1
 
-sync func fire_bullet():
-	canFire = false
-	fireRate.start()
-	var bullet = playerBullet.instance()
-	add_child(bullet)
-	bullet.global_position = muzzle.global_position
-	bullet.velocity = Vector2.RIGHT.rotated(self.rotation)
-	bullet.set_rotation(global_rotation)
-	motion -= bullet.velocity * 25
-	
-	var muzzleflash = muzzleFlash.instance()
-	add_child(muzzleflash)
-	muzzleflash.global_position = muzzle.global_position
-	muzzleflash.set_rotation(self.rotation)
+func fire_bullet():
+	if Input.is_action_pressed("fire") and canFire == true:
+		canFire = false
+		$Timers/fireRate.start()
+		
+		var bullet = Global.instance_scene_on_main(playerBullet, muzzle.global_position)
+		bullet.velocity = Vector2.RIGHT.rotated(self.rotation) * bullet.speed
+		bullet.set_rotation(global_rotation)
+		
+		var flash = Global.instance_scene_on_main(muzzleFlash, muzzle.global_position)
+		flash.set_rotation(global_rotation)
+		
+		motion -= bullet.velocity * .2
 
 
 func _on_fireRate_timeout():
 	canFire = true
-

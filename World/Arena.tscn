@@ -1,43 +1,9 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
+[ext_resource path="res://Player/Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://World/Arena.gd" type="Script" id=2]
 
 [node name="Arena" type="Node2D"]
 script = ExtResource( 2 )
 
-[node name="HUD" type="CanvasLayer" parent="."]
-
-[node name="PanelPlayerList" type="Panel" parent="HUD"]
-self_modulate = Color( 1, 1, 1, 0 )
-margin_left = 20.0
-margin_top = 20.0
-margin_right = 257.0
-margin_bottom = 152.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="lblLocalPlayer" type="Label" parent="HUD/PanelPlayerList"]
-margin_right = 40.0
-margin_bottom = 14.0
-text = "LocalPlayerName"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="boxList" type="VBoxContainer" parent="HUD/PanelPlayerList"]
-margin_left = 2.0
-margin_top = 17.0
-margin_right = 109.0
-margin_bottom = 118.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="SpawnPoints" type="Node2D" parent="."]
-
-[node name="1" type="Position2D" parent="SpawnPoints"]
-position = Vector2( 158.089, 358.41 )
-
-[node name="2" type="Position2D" parent="SpawnPoints"]
-position = Vector2( 1148.66, 358.41 )
+[node name="Player" parent="." instance=ExtResource( 1 )]
