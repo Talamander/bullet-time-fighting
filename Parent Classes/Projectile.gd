@@ -21,7 +21,7 @@ func _process(delta):
 
 
 func _on_decayTimer_timeout():
-	pass#queue_free()
+	queue_free()
 
 
 func _on_VisibilityNotifier2D_screen_exited():

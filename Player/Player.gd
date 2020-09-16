@@ -34,11 +34,14 @@ func _physics_process(delta):
 		
 		if Input.is_action_pressed("fire") and canFire == true:
 			rpc('fire_bullet')
+		if Input.is_action_just_pressed("bullet_time"):
+			rpc('bullet_time')
+		if Input.is_action_just_released("bullet_time"):
+			rpc('bullet_time')
 		
 	else:
 		global_rotation = puppet_rotation
 		position = puppet_motion
-	bullet_time()
 
 
 func get_input_vector():
@@ -68,11 +71,15 @@ func look_rotation():
 	var look_vector = get_global_mouse_position() - global_position
 	global_rotation = atan2(look_vector.y, look_vector.x)
 
-func bullet_time():
-	if Input.is_action_just_pressed("bullet_time"):
+sync func bullet_time():
+	if Global.bullet_time == false:
 		Global.bullet_time = true
-	if Input.is_action_just_released("bullet_time"):
+	else:
 		Global.bullet_time = false
+	#if Input.is_action_just_pressed("bullet_time"):
+		#Global.bullet_time = true
+	#if Input.is_action_just_released("bullet_time"):
+		#Global.bullet_time = false
 
 sync func fire_bullet():
 	canFire = false
