@@ -1,0 +1,61 @@
+[gd_scene load_steps=5 format=2]
+
+[sub_resource type="Gradient" id=1]
+colors = PoolColorArray( 0.992188, 0.193787, 0.193787, 1, 1, 0, 0, 1 )
+
+[sub_resource type="GradientTexture" id=2]
+gradient = SubResource( 1 )
+width = 1
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 2, 2 )
+
+[sub_resource type="Animation" id=4]
+resource_name = "Lifetime"
+length = 4.0
+tracks/0/type = "bezier"
+tracks/0/path = NodePath("Sprite:modulate:a")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"points": PoolRealArray( 1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 2.3, 3.8 )
+}
+tracks/1/type = "method"
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 3.9 ),
+"transitions": PoolRealArray( 1 ),
+"values": [ {
+"args": [  ],
+"method": "queue_free"
+} ]
+}
+
+[node name="BloodParticle" type="RigidBody2D"]
+show_behind_parent = true
+z_index = -2
+collision_layer = 0
+collision_mask = 0
+mass = 62.36
+gravity_scale = 0.0
+
+[node name="Sprite" type="Sprite" parent="."]
+modulate = Color( 1, 1, 1, 0 )
+position = Vector2( -7.45058e-08, -5.96046e-08 )
+scale = Vector2( 4, 4 )
+texture = SubResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource( 3 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+autoplay = "Lifetime"
+anims/Lifetime = SubResource( 4 )
