@@ -26,7 +26,6 @@ scale_random = 0.5
 color_ramp = SubResource( 3 )
 
 [node name="PlayerBullet" instance=ExtResource( 1 )]
-speed = 1500
 
 [node name="Sprite" parent="." index="0"]
 scale = Vector2( 1, 0.25 )

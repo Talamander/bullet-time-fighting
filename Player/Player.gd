@@ -33,12 +33,12 @@ func _physics_process(delta):
 		rset("puppet_rotation", global_rotation)
 		
 		if Input.is_action_pressed("fire") and canFire == true:
-			rpc_unreliable('fire_bullet')
+			rpc('fire_bullet')
 		
 	else:
 		global_rotation = puppet_rotation
 		position = puppet_motion
-	#bullet_time()
+	bullet_time()
 
 
 func get_input_vector():
@@ -58,7 +58,10 @@ func apply_friction(amount):
 func calc_movement(value):
 	#Uses the acceleration to ramp up to the speed, so it's not instantaneous
 	motion += value
-	motion = motion.clamped(speed)
+	if Global.bullet_time == true:
+		motion = motion.clamped(speed/2)
+	else:
+		motion = motion.clamped(speed)
 
 func look_rotation():
 	#Gets the mouse location and sets the player rotation to match
@@ -67,21 +70,26 @@ func look_rotation():
 
 func bullet_time():
 	if Input.is_action_just_pressed("bullet_time"):
-		Engine.time_scale = .5
+		Global.bullet_time = true
 	if Input.is_action_just_released("bullet_time"):
-		Engine.time_scale = 1
+		Global.bullet_time = false
 
 sync func fire_bullet():
 	canFire = false
 	fireRate.start()
-	#Instances the playerBullet scene via the Global.gd singleton.
-	var muzzleflash = Global.instance_scene_on_main(muzzleFlash, muzzle.global_position)
-	muzzleflash.set_rotation(global_rotation)
-	var bullet = Global.instance_scene_on_main(playerBullet, muzzle.global_position)
-	bullet.velocity = Vector2.RIGHT.rotated(self.rotation) * bullet.speed
+	var bullet = playerBullet.instance()
+	add_child(bullet)
+	bullet.global_position = muzzle.global_position
+	bullet.velocity = Vector2.RIGHT.rotated(self.rotation)
 	bullet.set_rotation(global_rotation)
-	motion -= bullet.velocity * .4
+	motion -= bullet.velocity * 25
+	
+	var muzzleflash = muzzleFlash.instance()
+	add_child(muzzleflash)
+	muzzleflash.global_position = muzzle.global_position
+	muzzleflash.set_rotation(self.rotation)
 
 
 func _on_fireRate_timeout():
 	canFire = true
+

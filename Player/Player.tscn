@@ -6,7 +6,9 @@
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 25, 23 )
 
-[node name="Player" type="KinematicBody2D"]
+[node name="Player" type="KinematicBody2D" groups=[
+"time_scale_objects",
+]]
 script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
@@ -21,6 +23,6 @@ position = Vector2( 26.685, 9.37004 )
 [node name="Timers" type="Node" parent="."]
 
 [node name="fireRate" type="Timer" parent="Timers"]
-wait_time = 0.1
+wait_time = 0.2
 one_shot = true
 [connection signal="timeout" from="Timers/fireRate" to="." method="_on_fireRate_timeout"]

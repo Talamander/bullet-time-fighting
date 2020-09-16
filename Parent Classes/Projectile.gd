@@ -1,18 +1,28 @@
-extends KinematicBody2D
+extends Area2D
 
 puppet var puppet_motion = Vector2.ZERO
 
 var velocity = Vector2.ZERO
-export(int) var speed = 1000
+var speed = 1500
+
+func _ready():
+	set_as_toplevel(true)
+
 
 func _process(delta):
-	if is_network_master():
-		
-		position += velocity * delta
-		rset("puppet_motion", position)
+	if Global.bullet_time == true:
+		speed = 500
+		$Particles2D.speed_scale = .5
 	else:
-		position = puppet_motion
+		speed = 1500
+		$Particles2D.speed_scale = 1
+	position += velocity * delta * speed
+	
 
 
 func _on_decayTimer_timeout():
-	queue_free()
+	pass#queue_free()
+
+
+func _on_VisibilityNotifier2D_screen_exited():
+	pass#queue_free()
