@@ -28,7 +28,7 @@ func _physics_process(delta):
 		else:
 			calc_movement(input_vector * acceleration * delta)
 		motion = move_and_slide(motion)
-		
+		rpc('update_animations(input_vector)')
 		rset("puppet_motion", position)
 		rset("puppet_rotation", global_rotation)
 		
@@ -71,6 +71,15 @@ func look_rotation():
 	var look_vector = get_global_mouse_position() - global_position
 	global_rotation = atan2(look_vector.y, look_vector.x)
 
+sync func update_animations(input_vector):
+	if input_vector.x != 0 or input_vector.y != 0:
+		if Global.bullet_time == true:
+			$AnimationPlayer.play("Run_BulletTime")
+		else:
+			$AnimationPlayer.play("Run")
+	else:
+		$AnimationPlayer.play("Idle")
+
 sync func bullet_time():
 	if Global.bullet_time == false:
 		Global.bullet_time = true
@@ -87,9 +96,9 @@ sync func fire_bullet():
 	var bullet = playerBullet.instance()
 	add_child(bullet)
 	bullet.global_position = muzzle.global_position
-	bullet.velocity = Vector2.RIGHT.rotated(self.rotation)
+	bullet.velocity = Vector2.RIGHT.rotated(self.rotation) * bullet.speed
 	bullet.set_rotation(global_rotation)
-	motion -= bullet.velocity * 25
+	motion -= bullet.velocity * 15
 	
 	var muzzleflash = muzzleFlash.instance()
 	add_child(muzzleflash)

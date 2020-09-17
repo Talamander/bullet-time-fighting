@@ -3,7 +3,7 @@ extends Area2D
 puppet var puppet_motion = Vector2.ZERO
 
 var velocity = Vector2.ZERO
-var speed = 1500
+var speed = 45
 
 func _ready():
 	set_as_toplevel(true)
@@ -11,10 +11,10 @@ func _ready():
 
 func _process(delta):
 	if Global.bullet_time == true:
-		speed = 500
+		speed = 12
 		$Particles2D.speed_scale = .5
 	else:
-		speed = 1500
+		speed = 45
 		$Particles2D.speed_scale = 1
 	position += velocity * delta * speed
 	
