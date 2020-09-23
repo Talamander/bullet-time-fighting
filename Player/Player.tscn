@@ -1,12 +1,13 @@
 [gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://Player/Topdown Bullet Time Char Base-Sheet.png" type="Texture" id=1]
+[ext_resource path="res://Player/BTF-Anim-Base-SpriteSheet.png" type="Texture" id=1]
 [ext_resource path="res://Player/Player.gd" type="Script" id=2]
 
-[sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 35.713, 41.644 )
+[sub_resource type="CapsuleShape2D" id=5]
+radius = 31.3466
+height = 0.0
 
-[sub_resource type="Animation" id=4]
+[sub_resource type="Animation" id=2]
 resource_name = "Idle"
 length = 0.1
 tracks/0/type = "value"
@@ -22,9 +23,9 @@ tracks/0/keys = {
 "values": [ 0 ]
 }
 
-[sub_resource type="Animation" id=2]
-resource_name = "Run"
-length = 0.4
+[sub_resource type="Animation" id=3]
+length = 0.6
+loop = true
 tracks/0/type = "value"
 tracks/0/path = NodePath("Sprite:frame")
 tracks/0/interp = 1
@@ -32,15 +33,14 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 0, 1, 2, 3, 0 ]
+"values": [ 0, 1, 2, 3, 4, 5 ]
 }
 
-[sub_resource type="Animation" id=3]
-resource_name = "Run_BulletTime"
-length = 0.8
+[sub_resource type="Animation" id=4]
+length = 1.2
 loop = true
 step = 0.2
 tracks/0/type = "value"
@@ -50,10 +50,10 @@ tracks/0/loop_wrap = true
 tracks/0/imported = false
 tracks/0/enabled = true
 tracks/0/keys = {
-"times": PoolRealArray( 0, 0.2, 0.4, 0.6, 0.8 ),
-"transitions": PoolRealArray( 1, 1, 1, 1, 1 ),
+"times": PoolRealArray( 0, 0.2, 0.4, 0.6, 0.8, 1 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ),
 "update": 1,
-"values": [ 0, 1, 2, 3, 0 ]
+"values": [ 0, 1, 2, 3, 4, 5 ]
 }
 
 [node name="Player" type="KinematicBody2D" groups=[
@@ -62,17 +62,17 @@ tracks/0/keys = {
 script = ExtResource( 2 )
 
 [node name="Sprite" type="Sprite" parent="."]
-scale = Vector2( 2, 2 )
+rotation = 1.57079
+scale = Vector2( 0.3, 0.3 )
 texture = ExtResource( 1 )
-hframes = 4
-frame = 1
+hframes = 6
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( -11.2585, -0.344776 )
-shape = SubResource( 1 )
+position = Vector2( 3.96653, 1.0583 )
+shape = SubResource( 5 )
 
 [node name="Muzzle" type="Position2D" parent="."]
-position = Vector2( 51.9952, -4.02038 )
+position = Vector2( 65.2112, 3.76307 )
 
 [node name="Timers" type="Node" parent="."]
 
@@ -81,7 +81,7 @@ wait_time = 0.2
 one_shot = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-anims/Idle = SubResource( 4 )
-anims/Run = SubResource( 2 )
-anims/Run_BulletTime = SubResource( 3 )
+anims/Idle = SubResource( 2 )
+anims/Run = SubResource( 3 )
+anims/Run_BulletTime = SubResource( 4 )
 [connection signal="timeout" from="Timers/fireRate" to="." method="_on_fireRate_timeout"]

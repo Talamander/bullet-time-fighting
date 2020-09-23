@@ -28,7 +28,8 @@ func _physics_process(delta):
 		else:
 			calc_movement(input_vector * acceleration * delta)
 		motion = move_and_slide(motion)
-		rpc('update_animations(input_vector)')
+		#update_animations(input_vector)
+		rpc('update_animations', input_vector)
 		rset("puppet_motion", position)
 		rset("puppet_rotation", global_rotation)
 		
@@ -42,7 +43,7 @@ func _physics_process(delta):
 	else:
 		global_rotation = puppet_rotation
 		position = puppet_motion
-
+	
 
 func get_input_vector():
 	#input vector is direction of key input (WASD)
@@ -75,9 +76,12 @@ sync func update_animations(input_vector):
 	if input_vector.x != 0 or input_vector.y != 0:
 		if Global.bullet_time == true:
 			$AnimationPlayer.play("Run_BulletTime")
+			#print ("Bullet_Time Anim")
 		else:
+			#print ("Running")
 			$AnimationPlayer.play("Run")
 	else:
+		#print ("Idle")
 		$AnimationPlayer.play("Idle")
 
 sync func bullet_time():
@@ -98,7 +102,7 @@ sync func fire_bullet():
 	bullet.global_position = muzzle.global_position
 	bullet.velocity = Vector2.RIGHT.rotated(self.rotation) * bullet.speed
 	bullet.set_rotation(global_rotation)
-	motion -= bullet.velocity * 15
+	motion -= bullet.velocity * 5
 	
 	var muzzleflash = muzzleFlash.instance()
 	add_child(muzzleflash)
