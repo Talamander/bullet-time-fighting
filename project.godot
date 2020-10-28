@@ -8,9 +8,14 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "Resource",
+"class": "PlayerStats",
+"language": "GDScript",
+"path": "res://Singletons/PlayerStats.gd"
+} ]
 _global_script_class_icons={
-
+"PlayerStats": ""
 }
 
 [application]
@@ -28,6 +33,7 @@ Network="*res://Network/network.gd"
 
 window/size/width=1280
 window/size/height=720
+window/size/resizable=false
 
 [input]
 
@@ -69,6 +75,12 @@ fire={
 "events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":1,"pressed":false,"doubleclick":false,"script":null)
  ]
 }
+
+[layer_names]
+
+2d_physics/layer_1="World"
+2d_physics/layer_2="Player"
+2d_physics/layer_3="Hurtbox"
 
 [rendering]
 

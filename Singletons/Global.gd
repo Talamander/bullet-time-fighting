@@ -1,5 +1,8 @@
 extends Node
 
+#warning-ignore-all:unused_class_variable
+var PlayerStats = preload("res://Singletons/PlayerStats.tres")
+
 var bullet_time = false
 
 var player_info = {

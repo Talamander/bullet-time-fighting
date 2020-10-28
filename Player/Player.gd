@@ -6,16 +6,20 @@ var muzzleFlash = preload("res://Effects/MuzzleFlash.tscn")
 onready var muzzle = $Muzzle
 
 #Movement Variables
-var speed = 500
+var speed = 300
 var acceleration = 4000
 var motion = Vector2.ZERO
 puppet var puppet_motion = Vector2.ZERO
 puppet var puppet_rotation = global_rotation
 
 #Gun variables
-onready var fireRate = $Timers/fireRate
+onready var fireRate = $Timers/fireRateNormal
+onready var fireRateBT = $Timers/fireRateBulletTime
 var canFire = true
 
+func _ready():
+	if is_network_master():
+		Global.PlayerStats.connect("player_died", self, "_on_died")
 
 func _physics_process(delta):
 	if is_network_master():
@@ -96,7 +100,10 @@ sync func bullet_time():
 
 sync func fire_bullet():
 	canFire = false
-	fireRate.start()
+	if Global.bullet_time == true:
+		fireRateBT.start()
+	else:
+		fireRate.start()
 	var bullet = playerBullet.instance()
 	add_child(bullet)
 	bullet.global_position = muzzle.global_position
@@ -113,3 +120,20 @@ sync func fire_bullet():
 func _on_fireRate_timeout():
 	canFire = true
 
+func _on_fireRateBulletTime_timeout():
+	canFire = true
+
+
+func _on_Torso_hit(damage):
+	Global.PlayerStats.health -= damage
+	print ("torso")
+
+
+func _on_Head_hit(damage):
+	Global.PlayerStats.health = 0
+	print ("head")
+
+
+func _on_died():
+	if is_network_master():
+		queue_free()

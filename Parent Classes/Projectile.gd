@@ -2,6 +2,9 @@ extends Area2D
 
 puppet var puppet_motion = Vector2.ZERO
 
+export(int) var damage = 1
+
+
 var velocity = Vector2.ZERO
 var speed = 45
 
@@ -21,4 +24,14 @@ func _process(delta):
 
 
 func _on_decayTimer_timeout():
+	queue_free()
+
+
+
+func _on_PlayerBullet_body_entered(body):
+	queue_free()
+
+
+func _on_PlayerBullet_area_entered(hurtbox):
+	hurtbox.emit_signal("hit", damage)
 	queue_free()
