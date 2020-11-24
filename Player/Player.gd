@@ -3,11 +3,13 @@ extends KinematicBody2D
 var playerBullet = preload("res://Player/PlayerBullet.tscn")
 var muzzleFlash = preload("res://Effects/MuzzleFlash.tscn")
 
-onready var muzzle = $Muzzle
+onready var muzzle1 = $LeftMuzzle
+onready var muzzle2 = $RightMuzzle
+onready var engineparticles = $EngineParticles
 
 #Movement Variables
-var speed = 300
-var acceleration = 4000
+export(int)var speed = 300
+export(int)var acceleration = 4000
 var motion = Vector2.ZERO
 puppet var puppet_motion = Vector2.ZERO
 puppet var puppet_rotation = global_rotation
@@ -16,24 +18,33 @@ puppet var puppet_rotation = global_rotation
 onready var fireRate = $Timers/fireRateNormal
 onready var fireRateBT = $Timers/fireRateBulletTime
 var canFire = true
+var altFire = true
+var previous = null
+var state = "None"
 
 func _ready():
 	if is_network_master():
 		Global.PlayerStats.connect("player_died", self, "_on_died")
+		$Camera2D.make_current()
+		engineparticles.emitting = false
 
 func _physics_process(delta):
 	if is_network_master():
 		look_rotation()
 		
-		var input_vector = get_input_vector()
-		#Vector2.ZERO is true when no move key is being pressed
-		if input_vector == Vector2.ZERO:
-			apply_friction(acceleration * delta)
-		else:
+		if Input.is_action_pressed("Thrust"):
+			state = "Flying"
+			var input_vector = get_input_vector()
+			previous = input_vector
 			calc_movement(input_vector * acceleration * delta)
+		elif Input.is_action_pressed("Drift") && !Input.is_action_pressed("Thrust"):
+			calc_movement(previous * acceleration * delta)
+			state = "Drifting"
+		else:
+			apply_friction(acceleration * delta)
 		motion = move_and_slide(motion)
-		#update_animations(input_vector)
-		rpc('update_animations', input_vector)
+		
+		rpc('update_particles')
 		rset("puppet_motion", position)
 		rset("puppet_rotation", global_rotation)
 		
@@ -50,11 +61,8 @@ func _physics_process(delta):
 	
 
 func get_input_vector():
-	#input vector is direction of key input (WASD)
-	var input_vector = Vector2.ZERO
-	input_vector.x = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
-	input_vector.y = Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up")
-	return input_vector.normalized()
+	var input_vector = Vector2(1, 0).rotated(rotation)
+	return input_vector
 
 func apply_friction(amount):
 	#Get the player movement moving smoothly
@@ -70,23 +78,18 @@ func calc_movement(value):
 		motion = motion.clamped(speed/2)
 	else:
 		motion = motion.clamped(speed)
+	
 
 func look_rotation():
 	#Gets the mouse location and sets the player rotation to match
 	var look_vector = get_global_mouse_position() - global_position
 	global_rotation = atan2(look_vector.y, look_vector.x)
 
-sync func update_animations(input_vector):
-	if input_vector.x != 0 or input_vector.y != 0:
-		if Global.bullet_time == true:
-			$AnimationPlayer.play("Run_BulletTime")
-			#print ("Bullet_Time Anim")
-		else:
-			#print ("Running")
-			$AnimationPlayer.play("Run")
+sync func update_particles():
+	if state != "Drifting" && motion != Vector2.ZERO:
+		engineparticles.emitting = true
 	else:
-		#print ("Idle")
-		$AnimationPlayer.play("Idle")
+		engineparticles.emitting = false
 
 sync func bullet_time():
 	if Global.bullet_time == false:
@@ -99,6 +102,11 @@ sync func bullet_time():
 		#Global.bullet_time = false
 
 sync func fire_bullet():
+	var wingspawnpoint
+	if altFire == true:
+		wingspawnpoint = muzzle1
+	elif altFire == false:
+		wingspawnpoint = muzzle2
 	canFire = false
 	if Global.bullet_time == true:
 		fireRateBT.start()
@@ -106,15 +114,17 @@ sync func fire_bullet():
 		fireRate.start()
 	var bullet = playerBullet.instance()
 	add_child(bullet)
-	bullet.global_position = muzzle.global_position
+	bullet.global_position = wingspawnpoint.global_position
 	bullet.velocity = Vector2.RIGHT.rotated(self.rotation) * bullet.speed
 	bullet.set_rotation(global_rotation)
-	motion -= bullet.velocity * 5
+	#motion -= bullet.velocity * 5
 	
 	var muzzleflash = muzzleFlash.instance()
 	add_child(muzzleflash)
-	muzzleflash.global_position = muzzle.global_position
+	muzzleflash.global_position = wingspawnpoint.global_position
 	muzzleflash.set_rotation(self.rotation)
+	
+	altFire = !altFire
 
 
 func _on_fireRate_timeout():

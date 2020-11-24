@@ -30,7 +30,7 @@ func _on_player_list_changed():
 
 # Spawns a new player actor, using the provided player_info structure and the given spawn index
 remote func spawn_players(pinfo, spawn_index):
-	# If the spawn_index is -1 then we define it based on the size of the player list
+	# If the spawn_index is -1 then we define it bullet_timeased on the size of the player list
 	if (spawn_index == -1):
 		spawn_index = Network.players.size()
 	
